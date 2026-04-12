@@ -1,0 +1,280 @@
+/* ① bedroom.jpg を常時背景 — 夜空は削除 */
+.game-screen {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/bedroom.jpg') center center / cover no-repeat;
+  overflow: hidden;
+}
+
+/* ── Eyelids ── */
+.eyelid {
+  position: fixed;
+  left: 0; right: 0;
+  height: 51vh;
+  background: #000;
+  z-index: 60;
+  pointer-events: none;
+  transition: transform 0.75s ease-in;
+}
+
+.eyelid-top    { top: 0;    transform: translateY(-101%); }
+.eyelid-bottom { bottom: 0; transform: translateY(101%);  }
+
+.eyelid-top.closed    { transform: translateY(0); }
+.eyelid-bottom.closed { transform: translateY(0); }
+
+/* Opening: ゆっくり（3秒） */
+.eyelid-top.opening {
+  transform: translateY(-101%);
+  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.eyelid-bottom.opening {
+  transform: translateY(101%);
+  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Game card ── */
+.game-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  padding: 28px 28px 32px;
+  width: min(420px, 92vw);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+/* Intro: ベッドに入るアニメーション */
+.card-intro {
+  animation: bedEntrance 2.4s ease-in forwards;
+  transform-origin: center bottom;
+}
+@keyframes bedEntrance {
+  0%   { transform: perspective(800px) rotateX(0deg)  translateY(0px);  opacity: 1;   }
+  50%  { transform: perspective(800px) rotateX(10deg) translateY(20px); opacity: 0.8; }
+  85%  { transform: perspective(800px) rotateX(22deg) translateY(60px); opacity: 0.3; }
+  100% { transform: perspective(800px) rotateX(28deg) translateY(80px); opacity: 0;   }
+}
+
+/* Falling: 目を閉じながらフェード */
+.card-falling {
+  animation: cardFade 0.8s ease-in forwards;
+}
+@keyframes cardFade {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.97); }
+}
+
+/* ── Limit display ── */
+.limit-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.limit-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.1em;
+}
+.limit-time {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff9a9a;
+}
+
+/* ── Progress bar ── */
+.progress-bar-wrap {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4a6fa5, #e06060);
+  border-radius: 999px;
+  transition: width 0.9s ease-out;
+}
+
+/* ── Clock area ── */
+.clock-area {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.analog-clock {
+  filter: drop-shadow(0 0 20px rgba(168, 200, 255, 0.2));
+}
+
+/* 目を開けるたびに左からスライドイン */
+.clock-slide-in {
+  animation: clockSlideIn 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+@keyframes clockSlideIn {
+  from { transform: translateX(-70px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.skip-badge {
+  position: absolute;
+  top: 4px;
+  right: -4px;
+  background: rgba(100,160,255,0.2);
+  border: 1px solid rgba(100,160,255,0.45);
+  color: #a8c8ff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.skip-badge.big-skip {
+  background: rgba(255,80,80,0.2);
+  border-color: rgba(255,80,80,0.5);
+  color: #ffaaaa;
+  font-size: 14px;
+}
+@keyframes popIn {
+  from { transform: scale(0.6) translateY(4px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);   opacity: 1; }
+}
+
+/* ── Sleep count ── */
+.sleep-count {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 22px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Awake buttons ── */
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-sleep {
+  width: 100%;
+  padding: 17px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #2d4a7a, #5a3a8a);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 20px rgba(90,58,138,0.4);
+}
+.btn-sleep:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(90,58,138,0.5);
+}
+.btn-wake {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: rgba(255,255,255,0.55);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-wake:hover {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* ── Intro text ── */
+.intro-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+  animation: blink 1s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 0.35; }
+  50%       { opacity: 0.75; }
+}
+
+/* ③ ZZZ — まぶた(z:60)の上(z:65)に常時表示 */
+.zzz-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.zzz-container {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}
+.zzz {
+  color: rgba(168,200,255,0.65);
+  font-weight: bold;
+  animation: floatZ 1.4s ease-in-out infinite;
+}
+.z1 { font-size: 18px; animation-delay: 0s;    }
+.z2 { font-size: 24px; animation-delay: 0.35s; }
+.z3 { font-size: 32px; animation-delay: 0.7s;  }
+@keyframes floatZ {
+  0%   { opacity: 0; transform: translateY(0)    rotate(-8deg); }
+  40%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-28px) rotate(8deg); }
+}
+
+/* ── 目を開けるボタン（まぶたの上） ── */
+.sleep-choices {
+  position: fixed;
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 70;
+  width: min(320px, 80vw);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+.sleep-choices.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.btn-open-eyes {
+  width: 100%;
+  padding: 17px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #2d4a7a, #5a3a8a);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 24px rgba(90,58,138,0.55);
+}
+.btn-open-eyes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(90,58,138,0.65);
+}

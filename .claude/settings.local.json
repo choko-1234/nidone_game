@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/app_project/notion-paper-search/**)",
+      "Bash(python search_papers.py \"machine learning\" 3)",
+      "Bash(python search_papers.py \"machine learning\" 2)",
+      "Bash(pip install:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
