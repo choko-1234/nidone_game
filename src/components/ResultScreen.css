@@ -144,3 +144,75 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(90, 58, 138, 0.5);
 }
+
+/* ── ランキング登録 ── */
+.ranking-register {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.name-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+  color: white;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.name-input::placeholder { color: rgba(255,255,255,0.3); }
+.name-input:focus { border-color: rgba(255,255,255,0.4); }
+
+.register-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #2d4a7a, #5a3a8a);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.register-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ranking-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.ranking-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8);
+}
+
+.register-done {
+  text-align: center;
+  color: #a8e6a3;
+  font-size: 14px;
+  margin: 4px 0;
+}
+.register-error {
+  text-align: center;
+  color: #ff9a9a;
+  font-size: 12px;
+  margin: 0;
+}

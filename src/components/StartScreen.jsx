@@ -29,7 +29,6 @@ export default function StartScreen({ onStart, limitOptions }) {
         <p className="subtitle">起きなければいけない時間まで<br />どれだけ粘れるか？</p>
 
         <div className="rules">
-          <div className="rule-item">😴 「もう少し寝る」で時間が進む</div>
           <div className="rule-item">⏰ 最初は少ししか経過しない…</div>
           <div className="rule-item">⚠️ いつからかドカンと経過するように</div>
           <div className="rule-item">🏆 リミットに最も近く起きた人が勝ち</div>

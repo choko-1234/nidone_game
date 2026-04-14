@@ -1,4 +1,7 @@
+import { useId } from 'react'
+
 export default function AnalogClock({ minutes }) {
+  const uid = useId().replace(/:/g, '')
   const totalHours = minutes / 60
   const mins = minutes % 60
 
@@ -28,18 +31,18 @@ export default function AnalogClock({ minutes }) {
   return (
     <svg viewBox="0 0 200 200" width="200" height="200" className="analog-clock">
       <defs>
-        <radialGradient id="face" cx="50%" cy="40%" r="65%">
+        <radialGradient id={`face_${uid}`} cx="50%" cy="40%" r="65%">
           <stop offset="0%"   stopColor="#1c1c42" />
           <stop offset="100%" stopColor="#08081e" />
         </radialGradient>
-        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+        <filter id={`glow_${uid}`} x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur stdDeviation="2.5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        <filter id="softglow" x="-50%" y="-50%" width="200%" height="200%">
+        <filter id={`softglow_${uid}`} x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="4" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
@@ -52,7 +55,7 @@ export default function AnalogClock({ minutes }) {
       <circle cx="100" cy="100" r="97" fill="none" stroke="rgba(168,200,255,0.12)" strokeWidth="1" />
 
       {/* Clock face */}
-      <circle cx="100" cy="100" r="95" fill="url(#face)" />
+      <circle cx="100" cy="100" r="95" fill={`url(#face_${uid})`} />
 
       {/* Inner ring glow */}
       <circle cx="100" cy="100" r="95" fill="none" stroke="rgba(168,200,255,0.18)" strokeWidth="1.5" />
@@ -92,7 +95,7 @@ export default function AnalogClock({ minutes }) {
         stroke="#e8f0ff"
         strokeWidth="5"
         strokeLinecap="round"
-        filter="url(#glow)"
+        filter={`url(#glow_${uid})`}
       />
 
       {/* Minute hand */}
@@ -102,12 +105,12 @@ export default function AnalogClock({ minutes }) {
         stroke="#a8c8ff"
         strokeWidth="3"
         strokeLinecap="round"
-        filter="url(#glow)"
+        filter={`url(#glow_${uid})`}
       />
 
       {/* Center cap */}
       <circle cx="100" cy="100" r="7" fill="#1c1c42" />
-      <circle cx="100" cy="100" r="5" fill="#a8c8ff" filter="url(#softglow)" />
+      <circle cx="100" cy="100" r="5" fill="#a8c8ff" filter={`url(#softglow_${uid})`} />
     </svg>
   )
 }

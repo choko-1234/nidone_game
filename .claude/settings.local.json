@@ -5,7 +5,8 @@
       "Bash(python search_papers.py \"machine learning\" 3)",
       "Bash(python search_papers.py \"machine learning\" 2)",
       "Bash(pip install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(npm install:*)"
     ]
   }
 }

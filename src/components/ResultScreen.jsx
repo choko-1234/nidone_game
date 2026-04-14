@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+import { supabase } from '../supabase'
 import './ResultScreen.css'
 
 function getResult(diff, isOver) {
@@ -49,11 +51,36 @@ function getResult(diff, isOver) {
   }
 }
 
-export default function ResultScreen({ gameState, formatTime, onRestart }) {
+export default function ResultScreen({ gameState, formatTime, onRestart, onRanking }) {
   const { currentMinutes, limitMinutes, sleepCount, autoOver } = gameState
   const isOver = autoOver || currentMinutes > limitMinutes
   const diff = Math.abs(currentMinutes - limitMinutes)
   const result = getResult(diff, isOver)
+
+  const [name, setName] = useState('')
+  const [status, setStatus] = useState('idle') // idle | loading | done | error
+
+  useEffect(() => {
+    if (!isOver) return
+    const src = diff <= 60 ? '/miss.mp3' : '/gameover.mp3'
+    const audio = new Audio(src)
+    audio.play().catch(() => {})
+    return () => { audio.pause() }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSubmit = async () => {
+    if (!name.trim()) return
+    setStatus('loading')
+    const { error } = await supabase.from('scores').insert({
+      name: name.trim(),
+      limit_minutes: limitMinutes,
+      woke_minutes: currentMinutes,
+      diff_minutes: diff,
+      is_over: isOver,
+      sleep_count: sleepCount,
+    })
+    setStatus(error ? 'error' : 'done')
+  }
 
   return (
     <div className="result-screen">
@@ -93,6 +120,34 @@ export default function ResultScreen({ gameState, formatTime, onRestart }) {
             <div className="score-num">{sleepCount}回</div>
             <div className="score-desc">二度寝した回数</div>
           </div>
+        </div>
+
+        {/* ランキング登録 */}
+        <div className="ranking-register">
+          {status === 'done' ? (
+            <p className="register-done">登録しました！</p>
+          ) : (
+            <>
+              <input
+                className="name-input"
+                type="text"
+                placeholder="名前を入力してランキングに登録"
+                maxLength={20}
+                value={name}
+                onChange={e => setName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+              />
+              <button
+                className="register-btn"
+                onClick={handleSubmit}
+                disabled={!name.trim() || status === 'loading'}
+              >
+                {status === 'loading' ? '登録中...' : '登録する'}
+              </button>
+              {status === 'error' && <p className="register-error">登録に失敗しました</p>}
+            </>
+          )}
+          <button className="ranking-btn" onClick={onRanking}>ランキングを見る</button>
         </div>
 
         <button className="restart-btn" onClick={onRestart}>

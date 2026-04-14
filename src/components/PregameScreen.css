@@ -1,0 +1,66 @@
+.pregame-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/bedroom.jpg') center center / cover no-repeat;
+  position: relative;
+  overflow: hidden;
+}
+
+.pregame-card {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  padding: 36px 32px;
+  width: min(360px, 88vw);
+  backdrop-filter: blur(8px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.pregame-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.12em;
+  margin: 0;
+}
+
+.pregame-clock {
+  filter: drop-shadow(0 0 20px rgba(168, 200, 255, 0.2));
+}
+
+.pregame-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  margin: 0 0 8px;
+}
+
+.pregame-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #2d4a7a, #5a3a8a);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(90, 58, 138, 0.4);
+}
+.pregame-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(90, 58, 138, 0.55);
+}
+.pregame-btn:disabled {
+  cursor: default;
+}

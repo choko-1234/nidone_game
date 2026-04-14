@@ -1,7 +1,10 @@
 import { useState, useCallback } from 'react'
+import './App.css'
 import StartScreen from './components/StartScreen'
 import GameScreen from './components/GameScreen'
 import ResultScreen from './components/ResultScreen'
+import RankingScreen from './components/RankingScreen'
+import PregameScreen from './components/PregameScreen'
 
 function randomBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -26,14 +29,19 @@ export default function App() {
   const [gameState, setGameState] = useState(null)
 
   const startGame = useCallback((limitMinutes) => {
-    const startMinutes = randomBetween(5 * 60, 6 * 60 + 30)
+    const startMinutes = randomBetween(limitMinutes - 140, limitMinutes - 100)
     setGameState({
       currentMinutes: startMinutes,
+      startMinutes,
       limitMinutes,
       sleepCount: 0,
-      phase2Threshold: randomBetween(3, 7),
+      phase2StartMinutes: randomBetween(limitMinutes - 60, limitMinutes - 30),
       history: [],
     })
+    setScreen('pregame')
+  }, [])
+
+  const handleCloseEyes = useCallback(() => {
     setScreen('game')
   }, [])
 
@@ -58,10 +66,25 @@ export default function App() {
     setScreen('start')
   }, [])
 
+  const handleRanking = useCallback(() => {
+    setScreen('ranking')
+  }, [])
+
+  const handleBackFromRanking = useCallback(() => {
+    setScreen('result')
+  }, [])
+
   return (
     <>
       {screen === 'start' && (
         <StartScreen onStart={startGame} limitOptions={LIMIT_OPTIONS} />
+      )}
+      {screen === 'pregame' && gameState && (
+        <PregameScreen
+          gameState={gameState}
+          onStart={handleCloseEyes}
+          formatTime={formatTime}
+        />
       )}
       {screen === 'game' && gameState && (
         <GameScreen
@@ -69,6 +92,7 @@ export default function App() {
           onSleep={handleSleep}
           onWakeUp={handleWakeUp}
           formatTime={formatTime}
+          skipIntro
         />
       )}
       {screen === 'result' && gameState && (
@@ -76,6 +100,13 @@ export default function App() {
           gameState={gameState}
           formatTime={formatTime}
           onRestart={handleRestart}
+          onRanking={handleRanking}
+        />
+      )}
+      {screen === 'ranking' && (
+        <RankingScreen
+          onBack={handleBackFromRanking}
+          formatTime={formatTime}
         />
       )}
     </>

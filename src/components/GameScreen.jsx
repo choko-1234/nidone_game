@@ -7,10 +7,10 @@ function randomBetween(min, max) {
 }
 
 // phase: 'intro' | 'awake' | 'falling' | 'sleeping' | 'opening'
-export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime }) {
-  const { currentMinutes, limitMinutes, sleepCount, phase2Threshold, autoOver } = gameState
+export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, skipIntro = false }) {
+  const { currentMinutes, startMinutes, limitMinutes, sleepCount, phase2StartMinutes, autoOver } = gameState
 
-  const [phase, setPhase] = useState('intro')
+  const [phase, setPhase] = useState(skipIntro ? 'sleeping' : 'intro')
   const [showWakeBtn, setShowWakeBtn] = useState(false)
   const [skipAmount, setSkipAmount] = useState(null)
   const [introEyelidClosing, setIntroEyelidClosing] = useState(false)
@@ -19,24 +19,26 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime })
   const prevMinutes = useRef(currentMinutes)
   const sleepStartRef = useRef(null)      // 目を閉じた瞬間の実時間
   const isPhase2Ref = useRef(false)        // このサイクルがフェーズ2か
+  const ibikiRef = useRef(null)            // いびき音声
 
   // ── INTRO → SLEEPING ─────────────────────────────────────────────────────
   useEffect(() => {
+    if (skipIntro) return
     const t1 = setTimeout(() => setIntroEyelidClosing(true), 600)
     const t2 = setTimeout(() => setPhase('sleeping'), 2400)
     return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [])
+  }, [skipIntro])
 
   // ── FALLING → SLEEPING (eyelids close, record sleep start) ───────────────
   useEffect(() => {
     if (phase !== 'falling') return
     const t = setTimeout(() => {
       sleepStartRef.current = Date.now()
-      isPhase2Ref.current = sleepCount >= phase2Threshold
+      isPhase2Ref.current = currentMinutes >= phase2StartMinutes
       setPhase('sleeping')
     }, 800)
     return () => clearTimeout(t)
-  }, [phase, sleepCount, phase2Threshold])
+  }, [phase, sleepCount, phase2StartMinutes, currentMinutes])
 
   // ── SLEEPING: record sleep start time (for intro path too) ───────────────
   useEffect(() => {
@@ -44,11 +46,27 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime })
     // intro path: falling doesn't run, so record here
     if (!sleepStartRef.current) {
       sleepStartRef.current = Date.now()
-      isPhase2Ref.current = sleepCount >= phase2Threshold
+      isPhase2Ref.current = currentMinutes >= phase2StartMinutes
     }
     const t = setTimeout(() => setShowWakeBtn(true), 1200)
-    return () => clearTimeout(t)
-  }, [phase, sleepCount, phase2Threshold])
+
+    // 5秒後にいびき再生開始
+    const ibikiTimer = setTimeout(() => {
+      const audio = new Audio('/ibiki.mp3')
+      audio.loop = true
+      audio.play().catch(() => {}) // autoplay制限で失敗しても無視
+      ibikiRef.current = audio
+    }, 5000)
+
+    return () => {
+      clearTimeout(t)
+      clearTimeout(ibikiTimer)
+      if (ibikiRef.current) {
+        ibikiRef.current.pause()
+        ibikiRef.current = null
+      }
+    }
+  }, [phase, sleepCount, phase2StartMinutes, currentMinutes])
 
   // ── OPENING → AWAKE ───────────────────────────────────────────────────────
   // まぶたが開き切る(3s)0.5s前にカードを出し、スライドインがちょうど3sで完了するようにする
@@ -86,6 +104,10 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime })
 
   const handleOpenEyes = useCallback(() => {
     setShowWakeBtn(false)
+    if (ibikiRef.current) {
+      ibikiRef.current.pause()
+      ibikiRef.current = null
+    }
 
     // 目を閉じていた実時間（秒）からゲーム内経過分を計算
     const elapsedSec = sleepStartRef.current
@@ -119,12 +141,15 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime })
   const showZzz   = phase === 'sleeping' // ③ zzzは sleeping のみ（opening時は非表示）
 
   const progressPct = Math.min(
-    ((currentMinutes - 5 * 60) / (limitMinutes - 5 * 60)) * 100,
+    ((currentMinutes - startMinutes) / (limitMinutes - startMinutes)) * 100,
     100
   )
 
+  const isAfternoon = currentMinutes >= 10 * 60
+  const bgImage = isAfternoon ? "url('/bedroom_afternoon.jpg')" : "url('/bedroom.jpg')"
+
   return (
-    <div className="game-screen">
+    <div className="game-screen" style={{ backgroundImage: bgImage }}>
       {/* ── Main card ── */}
       {showCard && (
         <div className={`game-card ${phase === 'intro' ? 'card-intro' : ''} ${phase === 'falling' ? 'card-falling' : ''}`}>
