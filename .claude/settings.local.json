@@ -6,7 +6,9 @@
       "Bash(python search_papers.py \"machine learning\" 2)",
       "Bash(pip install:*)",
       "Bash(npm run:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx --yes serve . --listen 3456)",
+      "Bash(npx --yes serve . --listen 3457)"
     ]
   }
 }
