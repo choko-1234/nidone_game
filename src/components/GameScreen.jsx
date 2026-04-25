@@ -165,8 +165,8 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, s
           <div key={clockEntryKey} className="clock-area clock-slide-in">
             <AnalogClock minutes={currentMinutes} />
             {skipAmount !== null && phase === 'awake' && (
-              <div className={`skip-badge ${skipAmount >= 60 ? 'big-skip' : ''}`}>
-                {skipAmount >= 60 ? `😱 ${skipAmount}分も経過！` : `+${skipAmount}分`}
+              <div className="skip-badge">
+                +{skipAmount}分
               </div>
             )}
           </div>
