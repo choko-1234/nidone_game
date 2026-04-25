@@ -32,6 +32,7 @@ export default function StartScreen({ onStart, limitOptions }) {
           <div className="rule-item">⏰ 最初は少ししか経過しない…</div>
           <div className="rule-item">⚠️ いつからかドカンと経過するように</div>
           <div className="rule-item">🏆 リミットに最も近く起きた人が勝ち</div>
+          <div className="rule-item">🌟 慣れたら2度寝回数を少なくしてみよう!!</div>
         </div>
 
         <div className="limit-select">
