@@ -24,6 +24,13 @@ export default function RankingScreen({ onBack, formatTime }) {
       <div className="ranking-card">
         <h2 className="ranking-title">ランキング</h2>
         <p className="ranking-sub">リミットに近いほど上位</p>
+        <div style={{ display: 'flex' }}>
+          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 26 }}>順位</p>
+          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 150 }}>氏名</p>
+          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 24, fontSize: 14 }}>リミット</p>
+          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 24 }}>何分前</p>
+          <p className="ranking-explain" style={{ whiteSpace: 'nowrap' }}>寝た回数</p>
+        </div>
 
         {loading ? (
           <p className="ranking-loading">読み込み中...</p>
@@ -36,7 +43,9 @@ export default function RankingScreen({ onBack, formatTime }) {
                 <span className="rank-num">{i + 1}</span>
                 <span className="rank-name">{s.name}</span>
                 <span className="rank-detail">
-                  リミット {formatTime(s.limit_minutes)}　{s.diff_minutes}分前　{s.sleep_count}回
+                  <span>{formatTime(s.limit_minutes)}</span>
+                  <span>{s.diff_minutes}分前</span>
+                  <span>{s.sleep_count}回</span>
                 </span>
               </li>
             ))}

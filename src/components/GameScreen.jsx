@@ -90,12 +90,22 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, s
   // ── Auto-navigate when time exceeded ──────────────────────────────────────
   useEffect(() => {
     if (phase === 'awake' && autoOver) {
-      const t = setTimeout(onWakeUp, 1200)
+      const t = setTimeout(handleWakeUp, 1200)
       return () => clearTimeout(t)
     }
   }, [phase, autoOver]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Handlers ─────────────────────────────────────────────────────────────
+  const handleWakeUp = useCallback(() => {
+    const diff = Math.abs(currentMinutes - limitMinutes)
+    const isOver = autoOver || currentMinutes > limitMinutes
+    if (isOver) {
+      const src = diff <= 60 ? '/miss.mp3' : '/gameover.mp3'
+      new Audio(src).play().catch(() => {})
+    }
+    onWakeUp()
+  }, [currentMinutes, limitMinutes, autoOver, onWakeUp])
+
   const handleMoreSleep = useCallback(() => {
     setSkipAmount(null)
     sleepStartRef.current = null // reset so sleeping effect records fresh time
@@ -178,7 +188,7 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, s
               <button className="btn-sleep" onClick={handleMoreSleep}>
                 もう少し寝る 😴
               </button>
-              <button className="btn-wake" onClick={onWakeUp}>
+              <button className="btn-wake" onClick={handleWakeUp}>
                 起きる 🌅
               </button>
             </div>

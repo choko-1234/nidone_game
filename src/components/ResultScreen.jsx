@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { supabase } from '../supabase'
 import './ResultScreen.css'
 
@@ -59,14 +59,6 @@ export default function ResultScreen({ gameState, formatTime, onRestart, onRanki
 
   const [name, setName] = useState('')
   const [status, setStatus] = useState('idle') // idle | loading | done | error
-
-  useEffect(() => {
-    if (!isOver) return
-    const src = diff <= 60 ? '/miss.mp3' : '/gameover.mp3'
-    const audio = new Audio(src)
-    audio.play().catch(() => {})
-    return () => { audio.pause() }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async () => {
     if (!name.trim()) return
