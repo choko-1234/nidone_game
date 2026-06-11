@@ -5,6 +5,7 @@ import GameScreen from './components/GameScreen'
 import ResultScreen from './components/ResultScreen'
 import RankingScreen from './components/RankingScreen'
 import PregameScreen from './components/PregameScreen'
+import { stopOverSound } from './overSound'
 
 function randomBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -27,6 +28,7 @@ const LIMIT_OPTIONS = [
 export default function App() {
   const [screen, setScreen] = useState('start')
   const [gameState, setGameState] = useState(null)
+  const [itemAwarded, setItemAwarded] = useState(false)
 
   const startGame = useCallback((limitMinutes) => {
     const startMinutes = randomBetween(limitMinutes - 140, limitMinutes - 100)
@@ -58,10 +60,22 @@ export default function App() {
   }, [])
 
   const handleWakeUp = useCallback(() => {
+    const gotItem = Math.random() < 0.1  // 25%の確率でアイテム付与
+    setItemAwarded(gotItem)
     setScreen('result')
   }, [])
 
+  const handleUseRewind = useCallback(() => {
+    setGameState(prev => ({
+      ...prev,
+      currentMinutes: Math.max(prev.startMinutes, prev.currentMinutes - 10),
+      autoOver: false,
+    }))
+    setItemAwarded(false)
+  }, [])
+
   const handleRestart = useCallback(() => {
+    stopOverSound()
     setGameState(null)
     setScreen('start')
   }, [])
@@ -91,7 +105,9 @@ export default function App() {
           gameState={gameState}
           onSleep={handleSleep}
           onWakeUp={handleWakeUp}
+          onUseRewind={handleUseRewind}
           formatTime={formatTime}
+          hasItem={itemAwarded}
           skipIntro
         />
       )}
@@ -101,6 +117,7 @@ export default function App() {
           formatTime={formatTime}
           onRestart={handleRestart}
           onRanking={handleRanking}
+          hasItem={itemAwarded}
         />
       )}
       {screen === 'ranking' && (

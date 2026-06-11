@@ -51,7 +51,7 @@ function getResult(diff, isOver) {
   }
 }
 
-export default function ResultScreen({ gameState, formatTime, onRestart, onRanking }) {
+export default function ResultScreen({ gameState, formatTime, onRestart, onRanking, hasItem = false }) {
   const { currentMinutes, limitMinutes, sleepCount, autoOver } = gameState
   const isOver = autoOver || currentMinutes > limitMinutes
   const diff = Math.abs(currentMinutes - limitMinutes)
@@ -113,6 +113,18 @@ export default function ResultScreen({ gameState, formatTime, onRestart, onRanki
             <div className="score-desc">二度寝した回数</div>
           </div>
         </div>
+
+        {/* アイテム */}
+        {hasItem && (
+          <div className="item-banner">
+            <span className="item-sparkle">✨</span>
+            <div>
+              <div className="item-got">ラッキー！アイテムゲット</div>
+              <div className="item-name">⏪ 10分巻き戻し</div>
+              <div className="item-hint">次のゲームで使えます</div>
+            </div>
+          </div>
+        )}
 
         {/* ランキング登録 */}
         <div className="ranking-register">

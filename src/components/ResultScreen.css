@@ -204,6 +204,56 @@
   color: rgba(255,255,255,0.8);
 }
 
+/* ── アイテムバナー ── */
+.item-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.1), rgba(180, 100, 255, 0.1));
+  padding: 14px 16px;
+  animation: itemReveal 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) 0.8s both;
+}
+
+@keyframes itemReveal {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.item-sparkle {
+  font-size: 28px;
+  animation: spin 2s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg)   scale(1); }
+  50%  { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.item-got {
+  font-size: 11px;
+  color: rgba(255, 215, 0, 0.7);
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+
+.item-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 0.04em;
+}
+
+.item-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 3px;
+}
+
 .register-done {
   text-align: center;
   color: #a8e6a3;

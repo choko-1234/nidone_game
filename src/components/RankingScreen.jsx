@@ -10,11 +10,16 @@ export default function RankingScreen({ onBack, formatTime }) {
     supabase
       .from('scores')
       .select('*')
-      .order('diff_minutes', { ascending: true })
       .eq('is_over', false)
-      .limit(20)
       .then(({ data }) => {
-        setScores(data ?? [])
+        const sorted = (data ?? [])
+          .slice()
+          .sort(
+            (a, b) =>
+              a.diff_minutes + a.sleep_count - (b.diff_minutes + b.sleep_count)
+          )
+          .slice(0, 20)
+        setScores(sorted)
         setLoading(false)
       })
   }, [])
@@ -23,7 +28,7 @@ export default function RankingScreen({ onBack, formatTime }) {
     <div className="ranking-screen">
       <div className="ranking-card">
         <h2 className="ranking-title">ランキング</h2>
-        <p className="ranking-sub">リミットに近いほど上位</p>
+        <p className="ranking-sub">リミットに近い + 二度寝回数が少ないほど上位</p>
         <div style={{ display: 'flex' }}>
           <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 26 }}>順位</p>
           <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 150 }}>氏名</p>
@@ -38,6 +43,7 @@ export default function RankingScreen({ onBack, formatTime }) {
           <p className="ranking-loading">まだ記録がありません</p>
         ) : (
           <ol className="ranking-list">
+            
             {scores.map((s, i) => (
               <li key={s.id} className={`ranking-item ${i < 3 ? `top${i + 1}` : ''}`}>
                 <span className="rank-num">{i + 1}</span>

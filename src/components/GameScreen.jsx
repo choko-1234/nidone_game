@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import AnalogClock from './AnalogClock'
+import { playOverSound } from '../overSound'
 import './GameScreen.css'
 
 function randomBetween(min, max) {
@@ -7,7 +8,7 @@ function randomBetween(min, max) {
 }
 
 // phase: 'intro' | 'awake' | 'falling' | 'sleeping' | 'opening'
-export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, skipIntro = false }) {
+export default function GameScreen({ gameState, onSleep, onWakeUp, onUseRewind, formatTime, hasItem = false, skipIntro = false }) {
   const { currentMinutes, startMinutes, limitMinutes, sleepCount, phase2StartMinutes, autoOver } = gameState
 
   const [phase, setPhase] = useState(skipIntro ? 'sleeping' : 'intro')
@@ -101,7 +102,7 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, s
     const isOver = autoOver || currentMinutes > limitMinutes
     if (isOver) {
       const src = diff <= 60 ? '/miss.mp3' : '/gameover.mp3'
-      new Audio(src).play().catch(() => {})
+      playOverSound(src)
     }
     onWakeUp()
   }, [currentMinutes, limitMinutes, autoOver, onWakeUp])
@@ -191,6 +192,11 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, formatTime, s
               <button className="btn-wake" onClick={handleWakeUp}>
                 起きる 🌅
               </button>
+              {hasItem && (
+                <button className="btn-rewind" onClick={onUseRewind}>
+                  ⏪ 10分巻き戻す
+                </button>
+              )}
             </div>
           )}
 
