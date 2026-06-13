@@ -25,23 +25,20 @@ function get(name) {
 }
 
 // 必ずユーザー操作（クリック/タップ）のハンドラ内で呼ぶこと。
+// 各要素を「ミュート再生→同じtick内で即停止」して音を出さずにアンロックする。
 export function unlockAudio() {
   if (unlocked) return
   unlocked = true
   for (const name of Object.keys(SOURCES)) {
     const audio = get(name)
-    const wasLoop = audio.loop
-    audio.loop = false
     audio.muted = true
-    const restore = () => {
-      audio.pause()
-      audio.currentTime = 0
-      audio.muted = false
-      audio.loop = wasLoop
-    }
-    const p = audio.play()
-    if (p && p.then) p.then(restore).catch(() => { audio.muted = false; audio.loop = wasLoop })
-    else restore()
+    try {
+      const p = audio.play()
+      if (p && p.catch) p.catch(() => {}) // 即pauseによるAbortErrorを無視
+    } catch { /* ignore */ }
+    audio.pause()        // 同期的に即停止 → 音は出ない
+    audio.currentTime = 0
+    audio.muted = false
   }
 }
 
