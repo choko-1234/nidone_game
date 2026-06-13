@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import AnalogClock from './AnalogClock'
 import { playOverSound } from '../overSound'
+import { unlockAudio, playSound, stopSound } from '../audio'
 import './GameScreen.css'
 
 function randomBetween(min, max) {
@@ -20,7 +21,6 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, onUseRewind, 
   const prevMinutes = useRef(currentMinutes)
   const sleepStartRef = useRef(null)      // 目を閉じた瞬間の実時間
   const isPhase2Ref = useRef(false)        // このサイクルがフェーズ2か
-  const ibikiRef = useRef(null)            // いびき音声
 
   // ── INTRO → SLEEPING ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -51,21 +51,15 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, onUseRewind, 
     }
     const t = setTimeout(() => setShowWakeBtn(true), 1200)
 
-    // 5秒後にいびき再生開始
+    // 5秒後にいびき再生開始（アンロック済みの要素を使い回す）
     const ibikiTimer = setTimeout(() => {
-      const audio = new Audio('/ibiki.mp3')
-      audio.loop = true
-      audio.play().catch(() => {}) // autoplay制限で失敗しても無視
-      ibikiRef.current = audio
+      playSound('ibiki')
     }, 5000)
 
     return () => {
       clearTimeout(t)
       clearTimeout(ibikiTimer)
-      if (ibikiRef.current) {
-        ibikiRef.current.pause()
-        ibikiRef.current = null
-      }
+      stopSound('ibiki')
     }
   }, [phase, sleepCount, phase2StartMinutes, currentMinutes])
 
@@ -115,10 +109,7 @@ export default function GameScreen({ gameState, onSleep, onWakeUp, onUseRewind, 
 
   const handleOpenEyes = useCallback(() => {
     setShowWakeBtn(false)
-    if (ibikiRef.current) {
-      ibikiRef.current.pause()
-      ibikiRef.current = null
-    }
+    stopSound('ibiki')
 
     // 目を閉じていた実時間（秒）からゲーム内経過分を計算
     const elapsedSec = sleepStartRef.current

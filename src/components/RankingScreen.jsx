@@ -29,12 +29,12 @@ export default function RankingScreen({ onBack, formatTime }) {
       <div className="ranking-card">
         <h2 className="ranking-title">ランキング</h2>
         <p className="ranking-sub">リミットに近い + 二度寝回数が少ないほど上位</p>
-        <div style={{ display: 'flex' }}>
-          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 26 }}>順位</p>
-          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 150 }}>氏名</p>
-          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 24, fontSize: 14 }}>リミット</p>
-          <p className="ranking-explain" style={{ whiteSpace: 'nowrap', marginRight: 24 }}>何分前</p>
-          <p className="ranking-explain" style={{ whiteSpace: 'nowrap' }}>寝た回数</p>
+        <div className="ranking-header">
+          <span>順位</span>
+          <span>氏名</span>
+          <span>リミット</span>
+          <span>何分前</span>
+          <span>回数</span>
         </div>
 
         {loading ? (
@@ -43,16 +43,13 @@ export default function RankingScreen({ onBack, formatTime }) {
           <p className="ranking-loading">まだ記録がありません</p>
         ) : (
           <ol className="ranking-list">
-            
             {scores.map((s, i) => (
               <li key={s.id} className={`ranking-item ${i < 3 ? `top${i + 1}` : ''}`}>
                 <span className="rank-num">{i + 1}</span>
                 <span className="rank-name">{s.name}</span>
-                <span className="rank-detail">
-                  <span>{formatTime(s.limit_minutes)}</span>
-                  <span>{s.diff_minutes}分前</span>
-                  <span>{s.sleep_count}回</span>
-                </span>
+                <span className="rank-cell">{formatTime(s.limit_minutes)}</span>
+                <span className="rank-cell">{s.diff_minutes}分前</span>
+                <span className="rank-cell">{s.sleep_count}回</span>
               </li>
             ))}
           </ol>

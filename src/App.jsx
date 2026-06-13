@@ -6,6 +6,7 @@ import ResultScreen from './components/ResultScreen'
 import RankingScreen from './components/RankingScreen'
 import PregameScreen from './components/PregameScreen'
 import { stopOverSound } from './overSound'
+import { unlockAudio } from './audio'
 
 function randomBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -31,6 +32,7 @@ export default function App() {
   const [itemAwarded, setItemAwarded] = useState(false)
 
   const startGame = useCallback((limitMinutes) => {
+    unlockAudio() // 最初のタップで全音声をアンロック（スマホ対策）
     const startMinutes = randomBetween(limitMinutes - 140, limitMinutes - 100)
     setGameState({
       currentMinutes: startMinutes,
@@ -44,6 +46,7 @@ export default function App() {
   }, [])
 
   const handleCloseEyes = useCallback(() => {
+    unlockAudio() // 念のため再アンロック（idempotent）
     setScreen('game')
   }, [])
 

@@ -45,14 +45,30 @@
   gap: 8px;
 }
 
+/* ヘッダーとデータ行を同じグリッドで揃える */
+.ranking-header,
 .ranking-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto auto auto;
   align-items: center;
-  gap: 12px;
+  column-gap: 10px;
+  text-align: left;
+}
+
+.ranking-header {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  margin: 0 0 12px;
+  padding: 0 14px;
+}
+.ranking-header span:nth-child(n + 3) {
+  text-align: right;
+}
+
+.ranking-item {
   background: rgba(255,255,255,0.05);
   border-radius: 12px;
   padding: 10px 14px;
-  text-align: left;
 }
 
 .ranking-item.top1 { border: 1px solid rgba(255,215,0,0.4); }
@@ -81,12 +97,11 @@
   white-space: nowrap;
 }
 
-.rank-detail {
-  font-size: 16px;
-  color: rgba(255,255,255,0.45);
-  flex-shrink: 0;
-  display: flex;
-  gap: 28px;
+.rank-cell {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  text-align: right;
+  white-space: nowrap;
 }
 
 .back-btn {
@@ -106,9 +121,31 @@
   color: white;
 }
 
-.ranking-explain {
-  font-size: 14px;
-  color: rgba(255,255,255,0.4);
-  margin: 0 0 12px;
-  text-align: left;
+/* ── スマホ対応：狭い幅でも全列が収まるように ── */
+@media (max-width: 420px) {
+  .ranking-card {
+    padding: 24px 14px;
+  }
+  .ranking-header,
+  .ranking-item {
+    grid-template-columns: 22px minmax(0, 1fr) auto auto auto;
+    column-gap: 6px;
+  }
+  .ranking-header {
+    font-size: 11px;
+    padding: 0 10px;
+  }
+  .ranking-item {
+    padding: 9px 10px;
+  }
+  .rank-num {
+    width: 22px;
+    font-size: 13px;
+  }
+  .rank-name {
+    font-size: 13px;
+  }
+  .rank-cell {
+    font-size: 12.5px;
+  }
 }
